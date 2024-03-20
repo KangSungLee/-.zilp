@@ -20,12 +20,12 @@ public interface BoardDao {
 	
 	@Select("SELECT COUNT(b.bid) FROM board b"
             + " JOIN users u ON b.uid=u.uid"
-            + " WHERE b.isDeleted=0 AND ${field} LIKE '%${query}%'")
+            + " WHERE b.isDeleted=0 AND ${field} LIKE ${query}")
     int getBoardCount(String field, String query);
 	
 	@Select("SELECT b.*, u.uname FROM board b"
             + " JOIN users u ON b.uid=u.uid"
-            + " WHERE b.isDeleted=0 AND ${field} LIKE '%${query}%'"
+            + " WHERE b.isDeleted=0 AND ${field} LIKE ${query}"
             + " ORDER BY b.modTime DESC")
     List<Board> getBoardList(String field, String query);
 	
@@ -57,8 +57,11 @@ public interface BoardDao {
 	@Update("UPDATE board SET replyCount=${count} WHERE bid=${bid}")
 	void updateReplyCount(int bid, int count);
 	
-	@Select("SELECT b.* FROM board b JOIN likes l ON b.bid=l.bid WHERE l.uid=#{uid}")
+	@Select("SELECT b.* FROM board b JOIN likes l ON b.bid=l.bid WHERE l.uid=#{uid} AND isDeleted = 0")
 	List<Board> getLikeList(String uid);
+	
+	@Select("SELECT * FROM board WHERE CONCAT(address, title, uid, foodName, category, foodName, content) LIKE ${query} AND isDeleted = 0")
+	List<Board> getSearchList(String query);
 	//
 
 }

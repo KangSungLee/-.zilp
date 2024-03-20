@@ -24,9 +24,9 @@
 		<nav class="navbar navbar-expand navbar-light text-uppercase fixed-top" style="background-color: #ffc0cb">
 			<div class="container">
 					<div class="collapse navbar-collapse">
-						<a class="nav-link " th:href="@{/board/list}">홈</a>
+						<a class="nav-link " th:href="@{/board/list}"><img src="/food/img/맛집.png" style="width: 45px; height: 35px;"></a>
 						<span th:if="${session.sessUid eq 'admin'}">
-							<a class="nav-link ms-5" th:href="@{/dashBoard/status}">대쉬보드</a>
+							<a class="nav-link ms-5" th:href="@{/dashBoard/status}"><i class="fa-solid fa-chart-simple me-2"></i>대쉬보드</a>
 						</span>
 						<ul class="navbar-nav ms-auto">
 							<li class="nav-item">
@@ -57,12 +57,52 @@
 		<div class="row">
 			<div class="col-3">
 				<aside th:fragment="aside" class="fixed-aside">
-					<a th:href="@{/dashBoard/status}" class="btn btn-dark menu mt-5">통계</a>
+					<a th:href="@{/dashBoard/status}" class="btn btn-dark menu" style="margin-top: 70px;">통계</a>
           <a th:href="@{/board/insert}" class="btn btn-dark menu mt-3">게시글 작성</a>
           <a th:href="@{/dashBoard/userList}" class="btn btn-dark menu mt-3">유저</a>
 				</aside>
 			</div>
 		</div>
+	</div>
+	<div th:fragment="listTop" class="fixed-aside">
+		<nav class="navbar navbar-expand-lg text-uppercase fixed-top mt-5" id="mainNav" style="background-color: #fad6dc;">
+			<div class="container">
+					<a class="navbar-brand navbar-dark text-dark" th:href="@{/board/list#page-top}" style="color: rgb(255, 255, 255) !important;">맛Zip</a>
+					<form action="/food/board/searchList" method="post" class="ms-5">
+							<div class="d-flex">
+									<input type="text" name="query" class="form-control me-2" style="width: 400px;" placeholder="검색어를 입력하세요">
+									<input type="submit" value="검색" class="btn" style="color: white; background-color: rgb(255, 126, 190);">
+							</div>
+					</form>
+					<button class="navbar-toggler text-uppercase font-weight-bold"
+							style="background-color: #A17FFF; color: white; border: none; border-radius: 5px;" type="button"
+							data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive"
+							aria-expanded="false" aria-label="Toggle navigation">
+							Menu
+							<i class="fas fa-bars"></i>
+					</button>
+
+					<div class="collapse navbar-collapse" id="navbarResponsive">
+							<ul class="navbar-nav ms-auto">
+									<li class="nav-item mx-0" th:if="${session.sessUid}">
+											<a class="nav-link py-3 px-0 px-lg-3 rounded text-black" th:href="@{/board/likeList/{x}(x=${session.sessUid})}"><i class="fa-solid fa-heart"></i>&nbsp;좋아요</a>
+									</li>
+									<li class="nav-item mx-0 mx-lg-1">
+											<a class="nav-link py-3 px-0 px-lg-3 rounded text-black" th:href="@{/board/list#kFood}" id="btn1"><i class="fa-solid fa-bowl-food"></i>&nbsp;한식</a>
+									</li>
+									<li class="nav-item mx-0 mx-lg-1">
+											<a class="nav-link py-3 px-0 px-lg-3 rounded text-black" th:href="@{/board/list#jFood}" id="btn2"><i class="fa-solid fa-fish"></i>&nbsp;일식</a>
+									</li>
+									<li class="nav-item mx-0 mx-lg-1">
+											<a class="nav-link py-3 px-0 px-lg-3 rounded text-black" th:href="@{/board/list#cFood}" id="btn3"><i class="fa-solid fa-pepper-hot"></i>&nbsp;중식</a>
+									</li>
+									<li class="nav-item mx-0 mx-lg-1">
+											<a class="nav-link py-3 px-0 px-lg-3 rounded text-black" th:href="@{/board/list#aFood}" id="btn4"><i class="fa-solid fa-pizza-slice"></i></i>&nbsp;양식</a>
+									</li>
+							</ul>
+					</div>
+			</div>
+		</nav>
 	</div>
 
 	<footer th:fragment="bottom">

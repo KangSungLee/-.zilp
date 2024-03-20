@@ -102,6 +102,8 @@ public class BoardController {
 			String phoneNumber) {
 		// 세션으로부터 사용자 아이디를 가져옴
 		String sessUid = (String) session.getAttribute("sessUid");
+		openTime = (openTime == null || openTime.equals(""))? "00:00" : openTime;
+		closeTime = (closeTime == null || closeTime.equals(""))? "00:00" : closeTime;
 		String openClosed = openTime + " - " + closeTime;
 		String filename = null;
 		MultipartFile filePart = req.getFile("profile");
@@ -354,6 +356,13 @@ public class BoardController {
     @GetMapping("likeList/{uid}")
     public String likeList(@PathVariable String uid, Model model) {
     	List<Board> likeList = boardService.getLikeList(uid);
+    	model.addAttribute("likeList",likeList);
+		return "board/likeList";
+    }
+    
+    @PostMapping("searchList")
+    public String searchList(String query, Model model) {
+    	List<Board> likeList = boardService.getSearchList(query);
     	model.addAttribute("likeList",likeList);
 		return "board/likeList";
     }

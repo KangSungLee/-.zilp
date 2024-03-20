@@ -37,5 +37,7 @@ public interface BoardService {
 	void updateReplyCount(int bid, int count);
 	
 	List<Board> getLikeList(String uid);
+	
+	List<Board> getSearchList(String query);
 	//
 }

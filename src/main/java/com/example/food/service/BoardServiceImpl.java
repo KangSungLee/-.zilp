@@ -19,14 +19,14 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public int getBoardCount(String field, String query) {
-		query = "%" + query + "%";
+		query = "'%" + query + "%'";
 		return boardDao.getBoardCount(field, query);
 	}
 
 	@Override
 	public List<Board> getBoardList(String field, String query) {
 //		int offset = (page - 1) * COUNT_PER_PAGE;
-//		query = "%" + query + "%";
+		query = "'%" + query + "%'";
 		return boardDao.getBoardList(field, query);
 	}
 
@@ -82,6 +82,13 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<Board> getLikeList(String uid) {
 		return boardDao.getLikeList(uid);
+	}
+
+	@Override
+	public List<Board> getSearchList(String query) {
+		query = query.replace("'", "''");
+		query = "'%" + query + "%'";
+		return boardDao.getSearchList(query);
 	}
 	//
 }

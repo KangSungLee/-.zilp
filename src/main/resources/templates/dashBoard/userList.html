@@ -30,7 +30,6 @@
             <div class="col-10">
                 <table border="1" class="table center mt-5 ms-3">
                     <tr>
-                        <th>No.</th>
                         <th>ID</th>
                         <th>유저명</th>
                         <th>이메일</th>
@@ -38,7 +37,6 @@
                         <th>액션</th>
                     </tr>
                     <tr th:each="user: ${userList}">
-                        <td th:text="${userStat.count}">1</td>
                         <td th:text="${user.uid}">james</td>
                         <td th:text="${user.uname}">제임스</td>
                         <td th:text="${user.email}">james@gmail.com</td>
