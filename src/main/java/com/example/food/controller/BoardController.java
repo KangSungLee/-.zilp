@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -51,35 +52,9 @@ public class BoardController {
 	public String list(@RequestParam(name = "p", defaultValue = "1") int page,
 			@RequestParam(name = "f", defaultValue = "title") String field,
 			@RequestParam(name = "q", defaultValue = "") String query, HttpSession session, Model model) {
-		// 게시글 목록을 가져오는 서비스 메소드 호출
-		List<Board> boardList = boardService.getBoardList(field, query);
-
-		// 페이지네이션 정보 설정
-
-		// 전체 게시물 수를 가져오기 위해 게시물 서비스의 getBoardCount 메서드 호출
-		int totalBoardCount = boardService.getBoardCount(field, query);
-//		// 전체 페이지 수 계산 (한 페이지당 게시물 수를 나눈 뒤 올림 처리)
-//		int totalPages = (int) Math.ceil(totalBoardCount / (double) BoardService.COUNT_PER_PAGE);
-//		// 시작 페이지 계산
-//		int startPage = (int) Math.ceil((page - 0.5) / BoardService.PAGE_PER_SCREEN - 1) * BoardService.PAGE_PER_SCREEN
-//				+ 1;
-//		// 종료 페이지 계산 (총 페이지 수와 시작 페이지를 기준으로 계산)
-//		int endPage = Math.min(totalPages, startPage + BoardService.PAGE_PER_SCREEN - 1);
-//		// 페이지 번호 목록 생성을 위한 리스트
-		List<Integer> pageList = new ArrayList<>();
-//		// 시작 페이지부터 종료 페이지까지 반복하면서 페이지 목록에 추가
-//		for (int i = startPage; i <= endPage; i++)
-//			pageList.add(i);
-
-		// 세션 및 모델에 필요한 정보 저장 후 목록 페이지로 이동
-//		session.setAttribute("currentBoardPage", page);
+		
+		List<Board> boardList = boardService.getBoardList(field, query);	
 		model.addAttribute("boardList", boardList);
-//		model.addAttribute("field", field);
-//		model.addAttribute("query", query);
-//		model.addAttribute("totalPages", totalPages);
-//		model.addAttribute("startPage", startPage);
-//		model.addAttribute("endPage", endPage);
-//		model.addAttribute("pageList", pageList);
 		model.addAttribute("menu", menu);
 		
 		return "board/list";
@@ -196,21 +171,6 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 
-	// 댓글 작성 처리 메소드
-	@PostMapping("/reply") //uid=board.uid
-	public String reply(int bid, String uid, String comment, HttpSession session) {
-		String sessUid = (String) session.getAttribute("sessUid");
-		int isMine = (sessUid.equals(uid)) ? 1 : 0;
-		Reply reply = new Reply(comment, sessUid, bid, isMine);
-		replyService.insertReply(reply);
-		boardService.increaseReplyCount(bid);
-		
-		int count = boardService.replyCount(bid);
-		boardService.updateReplyCount(bid, count);
-
-		return "redirect:/board/detail/" + bid + "/" + uid + "?option=DNI";
-	}
-
 	// AJAX 처리 - 타임리프에서 세팅하는 값을 변경하기 위한 방법
 	@GetMapping("/like/{bid}")
 	public String like(@PathVariable int bid, HttpSession session, Model model) {
@@ -310,7 +270,37 @@ public class BoardController {
 
 		return "redirect:/board/detail/" + bid + "/" + sessUid;
 	}
-	//	---------------
+	
+	// 댓글 작성 처리 메소드
+	@PostMapping("/reply") //uid=board.uid
+	public String reply(int bid, String uid, String comment, HttpSession session) {
+		String sessUid = (String) session.getAttribute("sessUid");
+		int isMine = (sessUid.equals(uid)) ? 1 : 0;
+		Reply reply = new Reply(comment, sessUid, bid, isMine);
+		replyService.insertReply(reply);
+		boardService.increaseReplyCount(bid);
+		
+		int count = boardService.replyCount(bid);
+		boardService.updateReplyCount(bid, count);
+
+		return "redirect:/board/detail/" + bid + "/" + uid + "?option=DNI";
+	}
+	
+	@GetMapping("/replyDelete/{rid}/{bid}")
+	public String replyDelete(@PathVariable int rid, @PathVariable int bid) {
+		replyService.deleteReply(rid);
+		int count = boardService.replyCount(bid);
+		
+		boardService.updateReplyCount(bid, count);
+		return "board/detail::#replyDelete";
+	}
+	
+	@PostMapping("replyUpdate")
+	public String replyUpdate(int rid, int bid, String uid, String comment) {
+		Reply reply = new Reply(rid, comment);
+		replyService.updateReply(reply);
+		return "redirect:/board/detail/" + bid + "/" + uid + "?option=DNI";
+	}
 	
 	// 대댓글 작성 페이지로 이동
     @PostMapping("/nReply")	
@@ -324,15 +314,6 @@ public class BoardController {
 		
         return "redirect:/board/detail/" + bid + "/" + uid + "?option=DNI";
     }
-	
-    @GetMapping("/replyDelete/{rid}/{bid}")
-    public String replyDelete(@PathVariable int rid, @PathVariable int bid) {
-    	replyService.deleteReply(rid);
-    	int count = boardService.replyCount(bid);
-    	
-		boardService.updateReplyCount(bid, count);
-		return "board/detail::#replyDelete";
-    }
     
     @GetMapping("/nReplyDelete/{nid}/{bid}")
     public String nReplyDelete(@PathVariable int nid, @PathVariable int bid) {
@@ -341,13 +322,6 @@ public class BoardController {
     	
 		boardService.updateReplyCount(bid, count);
 		return "board/detail::#nReplyDelete";
-    }
-    
-    @PostMapping("replyUpdate")
-    public String replyUpdate(int rid, int bid, String uid, String comment) {
-    	Reply reply = new Reply(rid, comment);
-    	replyService.updateReply(reply);
-    	return "redirect:/board/detail/" + bid + "/" + uid + "?option=DNI";
     }
     
     @PostMapping("nReplyUpdate")

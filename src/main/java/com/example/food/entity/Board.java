@@ -85,7 +85,7 @@ public class Board {
 	
 	@Override
 	public String toString() {
-		return "Board [bid=" + bid + ", title=" + title + ", content=" + content + ", uid=" + uid + ", modTime="
+		return "Board [bid=" + bid + ", title=" + title + ", content=" +   ", uid=" + uid + ", modTime="
 				+ modTime + ", isDeleted=" + isDeleted + ", viewCount=" + viewCount + ", likeCount=" + likeCount
 				+ ", titleImage=" + titleImage + ", category=" + category + ", foodName=" + foodName + ", openClosed="
 				+ openClosed + ", address=" + address + ", phoneNumber=" + phoneNumber + ", replyCount=" + replyCount

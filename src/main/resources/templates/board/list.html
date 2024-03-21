@@ -36,7 +36,7 @@
         position: relative;
         width: 1000px;
         margin: 0 auto;
-        height: 230px; /* 높이 조정이 필요할 경우 수정하세요 */
+        height: 250px; /* 높이 조정이 필요할 경우 수정하세요 */
         overflow: hidden;
         }
 
@@ -76,6 +76,34 @@
         #page-top .collapse {
             width: 600px;
         }
+        
+        .starRating {
+            unicode-bidi: bidi-override;
+            color: #f0f0f0;
+            font-size: 18px;
+            margin: 0;
+            padding: 0;
+            display: inline-block;
+        }
+        .starRating > span {
+            display: inline-block;
+            width: 0.9em;
+        }
+        .starRating > span:before {
+            content: "\2606"; /* 빈 별 모양 */
+        }
+        .starRating > span:hover:before,
+        .starRating > span:hover ~ span:before {
+            content: "\2605"; /* 색칠된 별 모양 */
+            color: rgba(250, 208, 0, 0.99);
+        }
+        .starRating > input[type=radio] {
+            display: none;
+        }
+        .starRating > input[type=radio]:checked ~ span:before {
+            content: "\2605"; /* 색칠된 별 모양 */
+            color: rgba(250, 208, 0, 0.99);
+        }
     </style>
 </head>
 <body id="page-top" style="background-color: rgb(255, 234, 254); ">
@@ -99,7 +127,14 @@
                 <li th:each="board : ${boardList}" th:if="${board.category == '한식'}">
                     <a th:href="@{/board/detail/{x}/{y}(x=${board.bid},y=${board.uid})}" class="text-black">
                         <img th:src = "@{/file/profile/{x}(x=${board.titleImage})}" style="width: 200px; height: 200px;">
-                        <p class="mt-2 text-black" style="text-align: center;">[[${board.title}]]</p>
+                        <span class="mt-2 text-black">[[${board.title}]]</span>
+                        <span th:id="'starRating' + ${board.bid}" class="starRating">
+                            <input type="radio" value="5"><span></span>
+                            <input type="radio" value="4"><span></span>
+                            <input type="radio" value="3"><span></span>
+                            <input type="radio" value="2"><span></span>
+                            <input type="radio" value="1"><span></span>
+                        </span>
                     </a>
                 </li>
             </ul>
@@ -119,7 +154,14 @@
                 <li th:each="board : ${boardList}" th:if="${board.category == '일식'}">
                     <a th:href="@{/board/detail/{x}/{y}(x=${board.bid},y=${board.uid})}">
                         <img th:src = "@{/file/profile/{x}(x=${board.titleImage})}" style="width: 200px; height: 200px;">
-                        <p class="mt-2 text-dark" style="text-align: center;">[[${board.title}]]</p>
+                        <span class="mt-2 text-dark">[[${board.title}]]</span>
+                        <span th:id="'starRating' + ${board.bid}" class="starRating">
+                            <input type="radio" value="5"><span></span>
+                            <input type="radio" value="4"><span></span>
+                            <input type="radio" value="3"><span></span>
+                            <input type="radio" value="2"><span></span>
+                            <input type="radio" value="1"><span></span>
+                        </span>
                     </a>
                 </li>
             </ul>
@@ -140,7 +182,14 @@
                 <li th:each="board : ${boardList}" th:if="${board.category == '중식'}">
                     <a th:href="@{/board/detail/{x}/{y}(x=${board.bid},y=${board.uid})}">
                         <img th:src = "@{/file/profile/{x}(x=${board.titleImage})}" style="width: 200px; height: 200px;">
-                        <p class="mt-2 text-dark" style="text-align: center;">[[${board.title}]]</p>
+                        <span class="mt-2 text-dark">[[${board.title}]]</span>
+                        <span th:id="'starRating' + ${board.bid}" class="starRating">
+                            <input type="radio" value="5"><span></span>
+                            <input type="radio" value="4"><span></span>
+                            <input type="radio" value="3"><span></span>
+                            <input type="radio" value="2"><span></span>
+                            <input type="radio" value="1"><span></span>
+                        </span>
                     </a>
                 </li>
             </ul>
@@ -160,7 +209,14 @@
                 <li th:each="board : ${boardList}" th:if="${board.category == '양식'}">
                     <a th:href="@{/board/detail/{x}/{y}(x=${board.bid},y=${board.uid})}">
                         <img th:src = "@{/file/profile/{x}(x=${board.titleImage})}" style="width: 200px; height: 200px;">
-                        <p class="mt-2 text-dark" style="text-align: center;">[[${board.title}]]</p>
+                        <span class="mt-2 text-dark">[[${board.title}]]</span>
+                        <span th:id="'starRating' + ${board.bid}" class="starRating">
+                            <input type="radio" value="5"><span></span>
+                            <input type="radio" value="4"><span></span>
+                            <input type="radio" value="3"><span></span>
+                            <input type="radio" value="2"><span></span>
+                            <input type="radio" value="1"><span></span>
+                        </span>
                     </a>
                 </li>
             </ul>
@@ -204,7 +260,8 @@
     <!-- * *                               SB Forms JS                               * *-->
     <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
     <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-    <script>
+    <script th:inline="javascript">
+    /*<!CDATA[*/
         // 섹션 정보를 담고 있는 객체 생성
         const sections = [
             {
@@ -337,6 +394,23 @@
                 setupSlideButtons(section);
             });
         });
+
+        let boardList = /*[[${boardList}]]*/ []; // 받아온 list 데이터
+        // 서버에서 별점 데이터를 받아와서 표시
+        boardList.forEach(function(board) {
+            id = '#starRating' + board.bid;
+            showRating(board.reviewStar, id);
+        });
+        // 별점 구현
+        function showRating(rating, id) {
+            let stars = document.querySelectorAll(id + ' input[type="radio"]');
+            stars.forEach(function(star) {
+                if (star.value == rating) {
+                    star.checked = true;
+                }
+            });
+        }
+    /*]]>*/
     </script>
 </body>
 </html>

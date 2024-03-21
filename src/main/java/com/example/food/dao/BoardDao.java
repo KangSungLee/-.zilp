@@ -57,7 +57,7 @@ public interface BoardDao {
 	@Update("UPDATE board SET replyCount=${count} WHERE bid=${bid}")
 	void updateReplyCount(int bid, int count);
 	
-	@Select("SELECT b.* FROM board b JOIN likes l ON b.bid=l.bid WHERE l.uid=#{uid} AND isDeleted = 0")
+	@Select("SELECT b.* FROM board b JOIN likes l ON b.bid=l.bid WHERE l.uid=#{uid} AND isDeleted = 0 AND value=1")
 	List<Board> getLikeList(String uid);
 	
 	@Select("SELECT * FROM board WHERE CONCAT(address, title, uid, foodName, category, foodName, content) LIKE ${query} AND isDeleted = 0")
