@@ -29,12 +29,12 @@ public interface BoardDao {
             + " ORDER BY b.modTime DESC")
     List<Board> getBoardList(String field, String query);
 	
-    @Insert("INSERT INTO board (title, content, uid, category, foodName, openClosed, address, phoneNumber, titleImage)"
-            + " VALUES (#{title}, #{content}, #{uid}, #{category}, #{foodName}, #{openClosed}, #{address}, #{phoneNumber}, #{titleImage})")
+    @Insert("INSERT INTO board (title, content, uid, category, foodName, openClosed, address, phoneNumber, titleImage, reviewStar)"
+            + " VALUES (#{title}, #{content}, #{uid}, #{category}, #{foodName}, #{openClosed}, #{address}, #{phoneNumber}, #{titleImage}, #{reviewStar})")
     void insertBoard(Board board);
 	
 	@Update("UPDATE board SET title=#{title}, content=#{content}, modTime=NOW(), "
-            + " category=#{category}, foodName=#{foodName}, openClosed=#{openClosed}, address=#{address}, phoneNumber=#{phoneNumber}, titleImage=#{titleImage}"
+            + " category=#{category}, foodName=#{foodName}, openClosed=#{openClosed}, address=#{address}, phoneNumber=#{phoneNumber}, titleImage=#{titleImage}, reviewStar=#{reviewStar}"
             + " WHERE bid=#{bid} AND isDeleted=0")
     void updateBoard(Board board);
 	

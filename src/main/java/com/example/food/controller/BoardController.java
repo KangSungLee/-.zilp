@@ -34,10 +34,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/board")
 public class BoardController {
-	//-----
 	@Autowired private NReplyService nReplyService;
-	//-----
-	
 	// 서비스 및 유틸리티 클래스를 주입하기 위한 어노테이션 사용
 	@Autowired private BoardService boardService;
 	@Autowired private ReplyService replyService;
@@ -75,14 +72,14 @@ public class BoardController {
 //			pageList.add(i);
 
 		// 세션 및 모델에 필요한 정보 저장 후 목록 페이지로 이동
-		session.setAttribute("currentBoardPage", page);
+//		session.setAttribute("currentBoardPage", page);
 		model.addAttribute("boardList", boardList);
-		model.addAttribute("field", field);
-		model.addAttribute("query", query);
+//		model.addAttribute("field", field);
+//		model.addAttribute("query", query);
 //		model.addAttribute("totalPages", totalPages);
 //		model.addAttribute("startPage", startPage);
 //		model.addAttribute("endPage", endPage);
-		model.addAttribute("pageList", pageList);
+//		model.addAttribute("pageList", pageList);
 		model.addAttribute("menu", menu);
 		
 		return "board/list";
@@ -99,7 +96,7 @@ public class BoardController {
 	@PostMapping("/insert")
 	public String insertProc(String title, String content, MultipartHttpServletRequest req, HttpSession session,
 			String titleImage, String category, String foodName, String openTime, String closeTime, String address,
-			String phoneNumber) {
+			String phoneNumber, Integer reviewStar) {
 		// 세션으로부터 사용자 아이디를 가져옴
 		String sessUid = (String) session.getAttribute("sessUid");
 		openTime = (openTime == null || openTime.equals(""))? "00:00" : openTime;
@@ -137,14 +134,16 @@ public class BoardController {
 			if (category == null || category.trim().isEmpty()) {
 				category = "기본 카테고리"; // 기본값 설정
 			}
-
+			
+			// reviewStar가 null거나 0이면
+			reviewStar = (reviewStar == 0 || reviewStar == null)? 1 : reviewStar;
+			
 			// 게시글 객체 생성 후 등록 => 수정해야함
-			Board board = new Board(title, content, sessUid, filename, category, foodName, openClosed);
+			Board board = new Board(title, content, sessUid, filename, category, foodName, openClosed, reviewStar);
 			board.setAddress(address);
 			board.setPhoneNumber(phoneNumber);
 			// 기타 필드 설정
 			boardService.insertBoard(board);
-
 			return "redirect:/board/list";
 	}
 
@@ -194,7 +193,7 @@ public class BoardController {
 	@GetMapping("/delete/{bid}")
 	public String delete(@PathVariable int bid, HttpSession session) {
 		boardService.deleteBoard(bid);
-		return "redirect:/board/list?p=" + session.getAttribute("currentBoardPage");
+		return "redirect:/board/list";
 	}
 
 	// 댓글 작성 처리 메소드
@@ -239,7 +238,7 @@ public class BoardController {
 
 	@PostMapping("/update")
 	public String updateProc(int bid, String uid, MultipartHttpServletRequest req, HttpSession session, String category,
-			String foodName, String openTime, String closeTime, String address, String phoneNumber) {
+			String foodName, String openTime, String closeTime, String address, String phoneNumber, Integer reviewStar) {
 		String title = req.getParameter("title");
 		String content = req.getParameter("content");
 		String sessUid = (String) session.getAttribute("sessUid");
@@ -289,6 +288,10 @@ public class BoardController {
 		if (category == null || category.trim().isEmpty()) {
 			category = "기본 카테고리"; // 기본값 설정
 		}
+		
+		// reviewStar가 null거나 0이면
+		reviewStar = (reviewStar == 0 || reviewStar == null)? 1 : reviewStar;
+		
 		Board board = boardService.getBoard(bid);
 		filename = (filename == null)? board.getTitleImage() : filename;
 		// 게시글 객체 업데이트 로직
@@ -300,6 +303,7 @@ public class BoardController {
 		board.setTitleImage(filename);
 		board.setAddress(address);
 		board.setPhoneNumber(phoneNumber);
+		board.setReviewStar(reviewStar);
 
 		// 게시글 정보를 데이터베이스에 업데이트
 		boardService.updateBoard(board);

@@ -4,11 +4,50 @@
 <head>
     <header th:replace="~{fragments/base :: head}"></header>
     <style>
-        td,
-        th {
+        td,th {
             text-align: center;
         }
+        fieldset {
+            display: inline-block;
+            direction: rtl;
+            border:0;
+		}
+		fieldset legend {
+				text-align: right;
+		}
+		.starRadio,input[type=radio] {
+				display: none;
+		}
+		.starLabel {
+				font-size: 3em;
+				color: transparent;
+				text-shadow: 0 0 0 #f0f0f0;
+				cursor: pointer; /* 마우스 포인터를 바꿔 클릭할 수 있도록 함 */
+		}
+		.starLabel:hover {
+				text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+		}
+		.starLabel:hover ~ label {
+				text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+				
+		}
+		.starRadio,input[type=radio]:checked ~ label {
+				text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+		}
     </style>
+    <script>
+        window.onload = function() {
+            function showRating(rating) {
+                var stars = document.querySelectorAll('fieldset input[type="radio"]');
+                stars.forEach(function(star) {
+                    if (star.value == rating) {
+                        star.checked = true;
+                    }
+                });
+            }
+            showRating([[${board.reviewStar}]]);
+        }
+    </script>
     <script src="https://cdn.ckeditor.com/4.20.1/standard/ckeditor.js"></script>
 </head>
 <body>
@@ -66,6 +105,20 @@
                             <tr>
                                 <td><label class="col-form-label">메인 메뉴</label></td>
                                 <td><input type="text" name="foodName" class="form-control" th:value="${board.foodName}"></td>
+                            </tr>
+                            <tr>
+                                <td><label class="col-form-label">평점</label></td>
+                                <td>
+                                    <div class="card">
+                                        <fieldset>
+                                            <input type="radio" name="reviewStar" value="5" id="rate1" class="starRadio"><label class="starLabel" for="rate1">★</label>
+                                            <input type="radio" name="reviewStar" value="4" id="rate2" class="starRadio"><label class="starLabel" for="rate2">★</label>
+                                            <input type="radio" name="reviewStar" value="3" id="rate3" class="starRadio"><label class="starLabel" for="rate3">★</label>
+                                            <input type="radio" name="reviewStar" value="2" id="rate4" class="starRadio"><label class="starLabel" for="rate4">★</label>
+                                            <input type="radio" name="reviewStar" value="1" id="rate5" class="starRadio" checked><label class="starLabel" for="rate5">★</label>
+                                        </fieldset>
+                                    </div>
+                                </td>
                             </tr>
                         </table>
                     </main>

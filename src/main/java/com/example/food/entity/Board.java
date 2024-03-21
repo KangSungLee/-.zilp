@@ -21,7 +21,34 @@ public class Board {
 	private String uname;
 	private String lat;
 	private String lon;
+	private int reviewStar;
 	
+	
+	
+	public Board(int bid, String title, String content, String uid, LocalDateTime modTime, int isDeleted, int viewCount,
+			int likeCount, String titleImage, String category, String foodName, String openClosed, String address,
+			String phoneNumber, int replyCount, String uname, String lat, String lon, int reviewStar) {
+		super();
+		this.bid = bid;
+		this.title = title;
+		this.content = content;
+		this.uid = uid;
+		this.modTime = modTime;
+		this.isDeleted = isDeleted;
+		this.viewCount = viewCount;
+		this.likeCount = likeCount;
+		this.titleImage = titleImage;
+		this.category = category;
+		this.foodName = foodName;
+		this.openClosed = openClosed;
+		this.address = address;
+		this.phoneNumber = phoneNumber;
+		this.replyCount = replyCount;
+		this.uname = uname;
+		this.lat = lat;
+		this.lon = lon;
+		this.reviewStar = reviewStar;
+	}
 	public Board() { }
 	public Board(int bid, String title, String content, String uid, LocalDateTime modTime, int isDeleted, int viewCount,
 			int likeCount, String titleImage, String category, String foodName, String openClosed, String address,
@@ -45,7 +72,7 @@ public class Board {
 	}
 	
 	public Board(String title, String content, String uid, String titleImage, String category, String foodName,
-			String openClosed) {
+			String openClosed, int reviewStar) {
 		this.title = title;
 		this.content = content;
 		this.uid = uid;
@@ -53,6 +80,7 @@ public class Board {
 		this.category = category;
 		this.foodName = foodName;
 		this.openClosed = openClosed;
+		this.reviewStar = reviewStar;
 	}
 	
 	@Override
@@ -61,9 +89,15 @@ public class Board {
 				+ modTime + ", isDeleted=" + isDeleted + ", viewCount=" + viewCount + ", likeCount=" + likeCount
 				+ ", titleImage=" + titleImage + ", category=" + category + ", foodName=" + foodName + ", openClosed="
 				+ openClosed + ", address=" + address + ", phoneNumber=" + phoneNumber + ", replyCount=" + replyCount
-				+ ", uname=" + uname + "]";
+				+ ", uname=" + uname + ", lat=" + lat + ", lon=" + lon + ", reviewStar=" + reviewStar + "]";
 	}
 	
+	public int getReviewStar() {
+		return reviewStar;
+	}
+	public void setReviewStar(int reviewStar) {
+		this.reviewStar = reviewStar;
+	}
 	public int getBid() {
 		return bid;
 	}

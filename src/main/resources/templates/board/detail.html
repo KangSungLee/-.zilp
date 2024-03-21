@@ -13,8 +13,38 @@
 				text-align: center;
 				font-size: 14px;
 				color: #333333;
-		
-}
+		}
+		.starRating {
+					unicode-bidi: bidi-override;
+					color: #f0f0f0;
+					font-size: 20px;
+					margin: 0;
+					padding: 0;
+					display: inline-block;
+		}
+		.starRating > span {
+				display: inline-block;
+				position: relative;
+				width: 1.0em;
+		}
+		.starRating > span:before {
+				content: "\2606"; /* 빈 별 모양 */
+				position: absolute;
+		}
+		.starRating > span:hover:before,
+		.starRating > span:hover ~ span:before {
+				content: "\2605"; /* 색칠된 별 모양 */
+				position: absolute;
+				color: rgba(250, 208, 0, 0.99);
+		}
+		.starRating > input[type=radio] {
+				display: none;
+		}
+		.starRating > input[type=radio]:checked ~ span:before {
+				content: "\2605"; /* 색칠된 별 모양 */
+				position: absolute;
+				color: rgba(250, 208, 0, 0.99);
+		}
 	</style>
 	<script th:inline="javascript">
     // 좋아요를 클릭했을 때 실행되는 함수
@@ -148,6 +178,18 @@
 				// 마커가 생성된 후에 정보 창을 열도록 합니다.
 				infowindow.open(map, marker);
         /*]]>*/
+
+			// 별점 구현
+			function showRating(rating) {
+					var stars = document.querySelectorAll('.starRating input[type="radio"]');
+					stars.forEach(function(star) {
+							if (star.value == rating) {
+									star.checked = true;
+							}
+					});
+			}
+			showRating([[${board.reviewStar}]]);
+
 		};
 </script>
 </head>
@@ -206,6 +248,14 @@
 										<span id="likeCount" th:text="${count}"></span>
 									</a>
 								</span>
+								<br>
+								<div class="starRating me-3">
+									<input type="radio" value="5"><span></span>
+									<input type="radio" value="4"><span></span>
+									<input type="radio" value="3"><span></span>
+									<input type="radio" value="2"><span></span>
+									<input type="radio" value="1"><span></span>
+							</div>
 							</h6>
 						</div>
 						<hr>
